@@ -17,4 +17,14 @@ public class UserMealWithExceed {
         this.calories = calories;
         this.exceed = exceed;
     }
+
+    @Override
+    public String toString() {
+        return "\nUserMealWithExceed:" +
+                "\ndate=" + dateTime.toLocalDate() +
+                "\ntime=" + dateTime.toLocalTime() +
+                "\ndescription=" + description +
+                "\ncalories=" + calories +
+                "\nexceed=" + exceed;
+    }
 }
