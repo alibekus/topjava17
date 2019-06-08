@@ -51,10 +51,12 @@ public class Main {
         userMeals.add(USER_MEAL_10);
         userMeals.add(USER_MEAL_11);
         userMeals.add(USER_MEAL_12);
-        List<UserMealWithExceed> userMealWithExceeds
+        /*List<UserMealWithExceed> userMealWithExceeds
                 = UserMealsUtil.getFilteredWithExceeded(userMeals, LocalTime.of(8, 0), LocalTime.of(19, 0), 2000);
         for (UserMealWithExceed mealWithExceed : userMealWithExceeds) {
             LOG.info(mealWithExceed.toString());
-        }
+        }*/
+        List<UserMealWithExceed> filteredWithExceededByStream = UserMealsUtil.getFilteredWithExceededByStream(userMeals, LocalTime.of(8, 0), LocalTime.of(19, 0), 2000);
+        filteredWithExceededByStream.forEach(System.out::println);
     }
 }
