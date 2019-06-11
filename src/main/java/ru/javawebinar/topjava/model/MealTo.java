@@ -1,20 +1,20 @@
 package ru.javawebinar.topjava.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.concurrent.atomic.AtomicLong;
+import java.time.LocalTime;
 
 public class MealTo {
 
     private static final long serialVersionUID = 1L;
-    private static final AtomicLong ATOMIC_LONG = new AtomicLong();
     private final long id;
     private final LocalDateTime dateTime;
     private final String description;
     private final int calories;
     private final boolean excess;
 
-    public MealTo(LocalDateTime dateTime, String description, int calories, boolean excess) {
-        this.id = ATOMIC_LONG.incrementAndGet();
+    public MealTo(long id, LocalDateTime dateTime, String description, int calories, boolean excess) {
+        this.id = id;
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
@@ -37,17 +37,24 @@ public class MealTo {
         return calories;
     }
 
+    public LocalDate getDate() {
+        return dateTime.toLocalDate();
+    }
+
+    public LocalTime getTime() {
+        return dateTime.toLocalTime();
+    }
+
     public boolean isExcess() {
         return excess;
     }
 
     @Override
     public String toString() {
-        return "MealTo{" +
-                "dateTime=" + dateTime +
-                ", description='" + description + '\'' +
-                ", calories=" + calories +
-                ", excess=" + excess +
-                '}';
+        return "\nMealTo:" +
+                "\ndateTime=" + dateTime +
+                "\ndescription='" + description +
+                "\ncalories=" + calories +
+                "\nexcess=" + excess;
     }
 }

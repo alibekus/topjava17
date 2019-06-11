@@ -3,17 +3,20 @@ package ru.javawebinar.topjava.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.concurrent.atomic.AtomicLong;
 
-public class Meal {
-    private static final AtomicLong atomicLong = new AtomicLong();
-    private final long id;
-    private final LocalDateTime dateTime;
-    private final String description;
-    private final int calories;
+public class Meal implements Comparable<Meal> {
 
-    public Meal(LocalDateTime dateTime, String description, int calories) {
-        this.id = atomicLong.incrementAndGet();
+    private static final long serialVersionUID = 1L;
+    private long id;
+    private LocalDateTime dateTime;
+    private String description;
+    private int calories;
+
+    public Meal() {
+    }
+
+    public Meal(long id, LocalDateTime dateTime, String description, int calories) {
+        this.id = id;
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
@@ -41,5 +44,17 @@ public class Meal {
 
     public LocalTime getTime() {
         return dateTime.toLocalTime();
+    }
+
+    public String toString() {
+        return "\nMeal:" +
+                "\ndateTime=" + dateTime +
+                "\ndescription='" + description +
+                "\ncalories=" + calories;
+    }
+
+    @Override
+    public int compareTo(Meal another) {
+        return Long.compare(this.id, another.id);
     }
 }
