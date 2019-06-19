@@ -17,29 +17,24 @@
 <hr>
 <h2>Meals</h2>
 <h3>Limit day calories: ${dayCalories}</h3>
+<p><button><a href="meals?mode=create">Добавить еду</a></button></p>
 <table border="1" cellpadding="2" cellspacing="0">
     <tr>
-        <th>#</th>
         <th>Description</th>
-        <th>Date</th>
-        <th>Time</th>
+        <th>Date&Time</th>
         <th>Calories</th>
-        <th>Excess</th>
         <th>Edit</th>
         <th>Delete</th>
     </tr>
     <c:forEach var="excessMeal" items="${excessMeals}">
         <jsp:useBean id="excessMeal" type="ru.javawebinar.topjava.model.MealTo"/>
         ${excessMeal.excess ? "<tr class=\"excess\">" : "<tr class='normal'>"}
-        <td>${excessMeal.id}</td>
-        <td>${excessMeal.description}</td>
-        <td>${excessMeal.date}</td>
-        <td>${excessMeal.time}</td>
-        <td>${excessMeal.calories}</td>
-        <td>${excessMeal.excess ? "Yes" : "No"}</td>
-        <td><a href="meals?action=edit&mealId=<c:out value="${excessMeal.id}"/>"><img src="img/pencil.png"
+        <td align="center">${excessMeal.description}</td>
+        <td align="center">${excessMeal.dateTimeFormatted}</td>
+        <td align="center">${excessMeal.calories}</td>
+        <td><a href="meals?mode=edit&mealId=<c:out value="${excessMeal.id}"/>"><img src="img/pencil.png"
                                                                                       alt="edit"></a></td>
-        <td><a href="meals?action=delete&mealId=<c:out value="${excessMeal.id}"/>"><img src="img/delete.png"
+        <td><a href="meals?mode=delete&mealId=<c:out value="${excessMeal.id}"/>"><img src="img/delete.png"
                                                                                         alt="delete"></a></td>
         </tr>
     </c:forEach>

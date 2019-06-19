@@ -20,9 +20,9 @@
     <title>Meal</title>
 </head>
 <body>
-<input type="hidden" id="mode" name="mode" value="edit"/>
 <section>
     <form method="post" action="meals" enctype="application/x-www-form-urlencoded">
+        <input type="hidden" id="mode" name="mode" value="${mode}"/>
         <input type="hidden" id="mealId" name="mealId" value="${meal.id}"/></dd>
         <dl>
             <dt><label for="desc">Description</label></dt>

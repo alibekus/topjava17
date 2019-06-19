@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
 import ru.javawebinar.topjava.service.MealService;
+import ru.javawebinar.topjava.util.IdGenerator;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.ServletConfig;
@@ -36,30 +37,33 @@ public class MealServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
-        LOG.debug("Redirect to meals. Action is " + action);
+        String mode = request.getParameter("mode");
+        LOG.debug("Redirect to meals. Action is " + mode);
         request.setAttribute("dayCalories", LIMIT_DAY_CALORIES);
-        if (action == null) {
-            request.setAttribute("excessMeals", excessMeals);
-            request.getRequestDispatcher("WEB-INF/jsp/meals.jsp").forward(request, response);
-            return;
-        }
-        Meal meal;
-        switch (action) {
+        Meal meal = null;
+        switch (mode) {
             case "delete":
                 mealService.delete(Long.parseLong(request.getParameter("mealId")));
                 meals = mealService.getAllSorted();
                 excessMeals = MealsUtil.getFilteredWithExcess(meals, LocalTime.of(0, 0), LocalTime.of(23, 59), LIMIT_DAY_CALORIES);
                 request.setAttribute("excessMeals", excessMeals);
-                request.getRequestDispatcher("WEB-INF/jsp/meals.jsp").forward(request, response);
+                response.sendRedirect("meals");
                 return;
             case "edit":
                 meal = mealService.get(Long.parseLong(request.getParameter("mealId")));
                 break;
+            case "create":
+                long id = IdGenerator.getInstance().generateId();
+                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime dateTime = LocalDateTime.of(now.getYear(),now.getMonth(),now.getDayOfMonth(),now.getHour(),now.getMinute());
+                meal = new Meal(id,dateTime,"",0);
+                break;
             default:
-                throw new IllegalArgumentException("Action " + action + " is illegal");
+                request.setAttribute("excessMeals", excessMeals);
+                request.getRequestDispatcher("WEB-INF/jsp/meals.jsp").forward(request, response);
         }
         request.setAttribute("meal", meal);
+        request.setAttribute("mode",mode);
         request.getRequestDispatcher("WEB-INF/jsp/meal.jsp").forward(request, response);
 
     }
@@ -74,10 +78,15 @@ public class MealServlet extends HttpServlet {
         LocalTime time = LocalTime.parse(request.getParameter("time"), DateTimeFormatter.ofPattern("HH:mm"));
         LocalDateTime dateTime = LocalDateTime.of(date, time);
         int calories = Integer.parseInt(request.getParameter("cals"));
+        String mode = request.getParameter("mode");
         Meal meal = new Meal(id, dateTime, desc, calories);
-        mealService.update(meal);
+        if (mode.equals("edit")) {
+            mealService.update(meal);
+        } else {
+            mealService.save(meal);
+        }
         meals = mealService.getAllSorted();
-        excessMeals = MealsUtil.getFilteredWithExcess(meals, LocalTime.of(0, 0), LocalTime.of(23, 59), 2000);
+        excessMeals = MealsUtil.getFilteredWithExcess(meals, LocalTime.of(0, 0), LocalTime.of(23, 59), LIMIT_DAY_CALORIES);
         request.setAttribute("excessMeals", excessMeals);
         request.getRequestDispatcher("WEB-INF/jsp/meals.jsp").forward(request, response);
     }

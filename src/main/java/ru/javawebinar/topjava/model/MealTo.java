@@ -1,12 +1,13 @@
 package ru.javawebinar.topjava.model;
 
+import ru.javawebinar.topjava.util.MealDateTimeFormatter;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class MealTo {
 
-    private static final long serialVersionUID = 1L;
     private final long id;
     private final LocalDateTime dateTime;
     private final String description;
@@ -43,6 +44,10 @@ public class MealTo {
 
     public LocalTime getTime() {
         return dateTime.toLocalTime();
+    }
+
+    public String getDateTimeFormatted(){
+        return MealDateTimeFormatter.doMealDateTimeFormat(dateTime);
     }
 
     public boolean isExcess() {

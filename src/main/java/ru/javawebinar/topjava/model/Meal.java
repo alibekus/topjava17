@@ -6,7 +6,6 @@ import java.time.LocalTime;
 
 public class Meal implements Comparable<Meal> {
 
-    private static final long serialVersionUID = 1L;
     private long id;
     private LocalDateTime dateTime;
     private String description;
@@ -46,6 +45,8 @@ public class Meal implements Comparable<Meal> {
         return dateTime.toLocalTime();
     }
 
+
+
     public String toString() {
         return "\nMeal:" +
                 "\ndateTime=" + dateTime +
@@ -55,6 +56,6 @@ public class Meal implements Comparable<Meal> {
 
     @Override
     public int compareTo(Meal another) {
-        return Long.compare(this.id, another.id);
+        return this.compareTo(another);
     }
 }
