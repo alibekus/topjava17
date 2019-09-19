@@ -1,18 +1,27 @@
 package ru.javawebinar.topjava.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 
+@Service
 public class MealServiceImpl implements MealService {
 
     private MealRepository repository;
+
+    @Autowired
+    public MealServiceImpl(MealRepository repository){
+        this.repository = repository;
+    }
 
     @Override
     public Meal create(Meal meal) {
@@ -26,7 +35,12 @@ public class MealServiceImpl implements MealService {
 
     @Override
     public Meal get(int id) throws NotFoundException {
-        return checkNotFoundWithId(repository.get(id), id);
+        int currentUserId = SecurityUtil.authUserId();
+        Meal meal = checkNotFoundWithId(repository.get(id), id);
+        if (currentUserId != meal.getUserId()) {
+            throw new NotFoundException("The meal is not belong to current user");
+        }
+        return meal;
     }
 
     @Override
@@ -40,7 +54,12 @@ public class MealServiceImpl implements MealService {
     }
 
     @Override
-    public List<Meal> getAll() {
-        return (List<Meal>) repository.getAll();
+    public List<Meal> getAll(int userId) {
+        return (List<Meal>) repository.getAll(userId);
+    }
+
+    @Override
+    public List<Meal> getAllBetweenDateTime(LocalDateTime start, LocalDateTime end) {
+        return repository.getAllBetweenDateTime(start,end);
     }
 }

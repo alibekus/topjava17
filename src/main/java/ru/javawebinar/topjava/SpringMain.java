@@ -2,11 +2,17 @@ package ru.javawebinar.topjava;
 
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepositoryImpl;
+import ru.javawebinar.topjava.service.MealServiceImpl;
+import ru.javawebinar.topjava.web.SecurityUtil;
+import ru.javawebinar.topjava.web.meal.MealRestController;
 import ru.javawebinar.topjava.web.user.AdminRestController;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class SpringMain {
     public static void main(String[] args) {
@@ -14,8 +20,12 @@ public class SpringMain {
         try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml")) {
             System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
             AdminRestController adminUserController = appCtx.getBean(AdminRestController.class);
+            System.out.println("adminUserController was created: " + adminUserController);
             User adminUser = adminUserController.create(new User(null, "userName", "email@mail.ru", "password", Role.ADMIN));
-
+            System.out.println("adminUser was created: " + adminUser.toString());
+            MealRestController mealRestController = appCtx.getBean(MealRestController.class);
+            List<Meal> meals = mealRestController.getAll(SecurityUtil.authUserId());
+            System.out.println(meals);
         }
     }
 }
