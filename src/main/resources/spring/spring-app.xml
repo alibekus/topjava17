@@ -5,7 +5,7 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 <!--
-    <bean class="ru.javawebinar.topjava.repository.inmemory.InMemoryUserRepository"/>
+    <bean id="memoryUserRepository" class="ru.javawebinar.topjava.repository.inmemory.InMemoryUserRepository"/>
 
     <bean class="ru.javawebinar.topjava.service.UserServiceImpl">
         <constructor-arg name="repository" ref="inMemoryUserRepository"/>
@@ -15,7 +15,7 @@
     <!-- Not necessary, already included with component-scan -->
     <!--<context:annotation-config/>-->
 
-    <context:component-scan base-package="ru.javawebinar.**.repository.jdbc"/>
+    <context:component-scan base-package="ru.javawebinar.**.repository.inmemory"/>
 
     <context:component-scan base-package="ru.javawebinar.**.service"/>
 

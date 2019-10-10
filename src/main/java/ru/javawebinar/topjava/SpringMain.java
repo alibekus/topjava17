@@ -14,20 +14,23 @@ import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 
+import static ru.javawebinar.topjava.util.MealsUtil.ADMIN_MEALS;
+
 public class SpringMain {
+
     public static void main(String[] args) {
         // java 7 automatic resource management
-        try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml")) {
+        try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/spring-db.xml")) {
             System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
             AdminRestController adminUserController = appCtx.getBean(AdminRestController.class);
             adminUserController.create(new User(null, "userName", "email@mail.ru", "password", Role.ROLE_ADMIN));
             System.out.println();
-
             MealRestController mealController = appCtx.getBean(MealRestController.class);
+            ADMIN_MEALS.forEach(meal -> mealController.create(meal));
             List<MealTo> filteredMealsWithExcess =
                     mealController.getBetween(
-                            LocalDate.of(2015, Month.MAY, 30), LocalTime.of(7, 0),
-                            LocalDate.of(2015, Month.MAY, 31), LocalTime.of(11, 0));
+                            LocalDate.of(2019, Month.APRIL, 10), LocalTime.of(7, 0),
+                            LocalDate.of(2019, Month.APRIL, 10), LocalTime.of(21, 0));
             filteredMealsWithExcess.forEach(System.out::println);
         }
     }

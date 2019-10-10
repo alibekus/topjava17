@@ -15,6 +15,10 @@ public class InMemoryBaseRepository<T extends AbstractBaseEntity> {
 
     Map<Integer, T> entryMap = new ConcurrentHashMap<>();
 
+    public InMemoryBaseRepository() {
+        super();
+    }
+
     public T save(T entry) {
         if (entry.isNew()) {
             entry.setId(counter.incrementAndGet());
@@ -25,6 +29,7 @@ public class InMemoryBaseRepository<T extends AbstractBaseEntity> {
     }
 
     public boolean delete(int id) {
+        System.out.println("entryMap.get("+id+"): " + entryMap.get(id));
         return entryMap.remove(id) != null;
     }
 

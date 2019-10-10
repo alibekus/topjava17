@@ -7,6 +7,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.Util;
+import ru.javawebinar.topjava.web.SecurityUtil;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -30,18 +31,22 @@ public class InMemoryMealRepository implements MealRepository {
     // Map  userId -> (mealId-> meal)
     private Map<Integer, InMemoryBaseRepository<Meal>> usersMealsMap = new ConcurrentHashMap<>();
 
-    {
-        MealsUtil.MEALS.forEach(meal -> save(meal, USER_ID));
+    /*{
+        MealsUtil.ADMIN_MEALS.forEach(meal -> save(meal, USER_ID));
 
         save(new Meal(LocalDateTime.of(2015, Month.JUNE, 1, 14, 0), "Админ ланч", 510), ADMIN_ID);
         save(new Meal(LocalDateTime.of(2015, Month.JUNE, 1, 21, 0), "Админ ужин", 1500), ADMIN_ID);
-    }
+    }*/
 
 
     @Override
     public Meal save(Meal meal, int userId) {
-        InMemoryBaseRepository<Meal> meals = usersMealsMap.computeIfAbsent(userId, uid -> new InMemoryBaseRepository<>());
-        return meals.save(meal);
+        if (userId == SecurityUtil.authUserId()) {
+            InMemoryBaseRepository<Meal> meals = usersMealsMap.computeIfAbsent(userId, uid -> new InMemoryBaseRepository<>());
+            return meals.save(meal);
+        } else {
+            return null;
+        }
     }
 
     @PostConstruct
@@ -81,7 +86,7 @@ public class InMemoryMealRepository implements MealRepository {
         return meals == null ? Collections.emptyList() :
                 meals.getCollection().stream()
                         .filter(filter)
-                        .sorted(Comparator.comparing(Meal::getDateTime).reversed())
+                        /*.sorted(Comparator.comparing(Meal::getDateTime).reversed())*/
                         .collect(Collectors.toList());
     }
 }
